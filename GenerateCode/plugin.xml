@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="GenerateCode_V1.0"
+            name="GenerateCode">
+      </category>
+      <wizard
+            category="GenerateCode_V1.0"
+            class="generatecode.One"
+            id="com.snow.wizards.one"
+            name="GenerateJ2EE">
+      </wizard>
+   </extension>
+
+</plugin>
