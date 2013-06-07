@@ -1,6 +1,9 @@
 package generatecode;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -12,10 +15,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class One extends Wizard implements INewWizard{
+public class GenerateWizard extends Wizard implements INewWizard{
 	
 	private ISelection selection;
-	private Two page;
+	private GenerateConfig page;
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
@@ -27,7 +30,7 @@ public class One extends Wizard implements INewWizard{
 	@Override
 	public void addPages() {
 		try {
-            page = new Two(selection, this);
+            page = new GenerateConfig(selection, this);
             addPage(page);
         } catch (Exception e) {
             e.printStackTrace();
@@ -66,7 +69,15 @@ public class One extends Wizard implements INewWizard{
 	
 	private void doFinish(IProgressMonitor monitor) throws CoreException {
 		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		CodegenEngine.generatecode();
+		try {
+			CodegenEngine.generatecode();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

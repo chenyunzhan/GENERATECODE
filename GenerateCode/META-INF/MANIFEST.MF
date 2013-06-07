@@ -9,6 +9,8 @@ Bundle-ClassPath: lib/dom4j-1.6.1.jar,
  lib/xml-apis-1.0.b2.jar
 Bundle-Activator: generatecode.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.ui.ide;bundle-version="3.7.0",
+ org.eclipse.core.resources;bundle-version="3.7.101"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

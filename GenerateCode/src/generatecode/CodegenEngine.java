@@ -1,101 +1,79 @@
 package generatecode;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 
 public class CodegenEngine {
-	private static String source = "F:\\work\\code\\generatecode\\GenerateCode\\xsl\\cdcatalog.xml";
-	private static String target = "F:\\work\\code\\generatecode\\GenerateCode\\xsl\\cdcatalog.html";
-	private static String rule = "F:\\work\\code\\generatecode\\GenerateCode\\xsl\\cdcatalog.xsl";
 	
-	public static void main(String[] args) {
+	
+	
+	static String base = System.getProperty("user.dir");
+	private static String source = base + "\\xsl\\xslt-server\\cdcatalog.xml";
+	private static String target = base + "\\xsl\\xslt-server\\cdcatalog.html";
+	private static String rule = base + "\\xsl\\xslt-server\\cdcatalog.xsl";
+	
+	public static void main(String[] args) throws TransformerException, IOException {
 		generatecode();
+		//regeneratecode();
 	}
 	
-	public static void generatecode () {
+	public static void generatecode () throws TransformerException, IOException {
+		Source xsltSource = new StreamSource(rule);
+		Source xmlSource = new StreamSource(source);
+		TransformerFactory transfact = TransformerFactory.newInstance();
+		StringWriter sw = new StringWriter();
+		Result result = new StreamResult(sw);
+		Transformer trans = transfact.newTransformer(xsltSource);
+		trans.transform(xmlSource, result);
+		String str = sw.toString();
+		str = str.replace("&lt;", "<");
+		str = str.replace("&gt;", ">");
+		str = str.replace("&apos;", "\'");
+		str = str.replace("&quot;", "\"");
+		str = str.replace("&amp;", "&");
+		str = "<!-- @generated -->\r\n" + str;
 		
-		try {
-			SAXReader saxReader = new SAXReader();
-			
-			Document sourceDoc = saxReader.read(source);
-			Document ruleDoc = saxReader.read(rule);
-			Document targetDoc = DocumentHelper.createDocument();
-			
-			Element html = targetDoc.addElement("html");
-			
-			Element body = html.addElement("body");
-			
-			Element h2 = body.addElement("h2");
-			
-			h2.setText("My CD Collection");
-			
-			Element table = body.addElement("table");
-			
-			table.addAttribute("border", "1");
-			
-			Element tr = table.addElement("tr");
-			
-			tr.addAttribute("bgcolor", "#9acd32");
-			
-			Element th1 = tr.addElement("th");
-			
-			th1.setText("Title");
-			
-			Element th2 = tr.addElement("th");
-			
-			th2.setText("Artist");
-			
-			
-			for (Iterator iterator = ruleDoc.selectNodes("//xsl:for-each").iterator(); iterator.hasNext();) {
-				Element element = (Element) iterator.next();
-				
-				for (Iterator iterator2 = sourceDoc.selectNodes(element.valueOf("@select")).iterator(); iterator2.hasNext();) {
-					Element element2 = (Element) iterator2.next();
-					
-					
-					Element temp = table.addElement("tr");
-					
-					for (Iterator iterator3 = ruleDoc.selectNodes("//xsl:value-of").iterator(); iterator3.hasNext();) {
-						Element element3 = (Element) iterator3.next();
-						
-						//System.out.println(element3.valueOf("@select"));
-						String tt = element3.valueOf("@select");
-						
-						(temp.addElement("td")).setText(element2.valueOf(tt));
-					}
-				}
-				break;
+		File file = new File(target);
+		
+		if(!file.exists()) {
+			 FileOutputStream fos = new FileOutputStream(target);
+			    OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+			    BufferedWriter bw = new BufferedWriter(osw);
+			    bw.write(str);
+			    bw.close();
+		}else {
+			InputStream is = new FileInputStream(file);
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			String line = br.readLine();
+			System.out.println(line);
+			System.out.println(line.length());
+			if(line.equals("<!-- @generated -->")) {
+				FileOutputStream fos = new FileOutputStream(target);
+			    OutputStreamWriter osw = new OutputStreamWriter(fos, "UTF-8");
+			    BufferedWriter bw = new BufferedWriter(osw);
+			    bw.write(str);
+			    bw.close();
 			}
-			
-			//获取xsl:template的子孙元素
-			Document targetDoc1 = DocumentHelper.createDocument();
-			for (Iterator iterator = ruleDoc.selectNodes("//xsl:template/html").iterator(); iterator.hasNext();) {
-				Element element = (Element) iterator.next();
-				targetDoc1.add((Element)element.clone());
-			}
-			
-			
-			try {
-				XMLWriter output = new XMLWriter(new FileWriter(new File(target)));
-				output.write(targetDoc1);
-				output.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		} catch (DocumentException e) { 
-			e.printStackTrace();
 		}
+	    
+	   
 	}
+	
 }

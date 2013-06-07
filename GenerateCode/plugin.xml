@@ -9,7 +9,7 @@
       </category>
       <wizard
             category="GenerateCode_V1.0"
-            class="generatecode.One"
+            class="generatecode.GenerateWizard"
             id="com.snow.wizards.one"
             name="GenerateJ2EE">
       </wizard>
