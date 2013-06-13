@@ -25,9 +25,9 @@ public class CodegenEngine {
 	
 	
 	static String base = System.getProperty("user.dir");
-	private static String source = base + "\\xsl\\xslt-server\\cdcatalog.xml";
-	private static String target = base + "\\xsl\\xslt-server\\cdcatalog.html";
-	private static String rule = base + "\\xsl\\xslt-server\\cdcatalog.xsl";
+	static String source = base + "\\xsl\\xslt-server\\cdcatalog.xml";
+	static String target = base + "\\xsl\\xslt-server\\cdcatalog.html";
+	static String rule = base + "\\xsl\\xslt-server\\cdcatalog.xsl";
 	
 	public static void main(String[] args) throws TransformerException, IOException {
 		generatecode();

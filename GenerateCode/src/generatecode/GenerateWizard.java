@@ -7,13 +7,16 @@ import javax.xml.transform.TransformerException;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+
 
 public class GenerateWizard extends Wizard implements INewWizard{
 	
@@ -70,6 +73,16 @@ public class GenerateWizard extends Wizard implements INewWizard{
 	private void doFinish(IProgressMonitor monitor) throws CoreException {
 		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 		try {
+			
+			String temp = Platform.getBundle("GenerateCode").getLocation();
+			System.out.println(temp);
+			System.out.println(page.selectPath);
+			CopyFiles.url1 = temp.substring(16) + "xsl";
+			CopyFiles.url2 = page.selectPath + "/xsl/";
+			CopyFiles.copy();
+			CodegenEngine.source = page.selectPath + "/xsl/xslt-server/cdcatalog.xml";
+			CodegenEngine.rule = page.selectPath + "/xsl/xslt-server/cdcatalog.xsl";
+			CodegenEngine.target = page.selectPath + "/xsl/xslt-server/cdcatalog.html";
 			CodegenEngine.generatecode();
 		} catch (TransformerException e) {
 			// TODO Auto-generated catch block

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -22,6 +23,7 @@ import org.eclipse.swt.layout.FillLayout;
 public class GenerateConfig extends WizardPage implements Listener{
 	
 	private Map<String, Control> mContainer = null;
+	public String selectPath = "";
 	
 	public GenerateConfig(ISelection selection, GenerateWizard currentWizard) {
 		super("wizardPage");
@@ -56,7 +58,8 @@ public class GenerateConfig extends WizardPage implements Listener{
 		dialog.getResult();
 		for (int i = 0; i < dialog.getResult().length; i++) {
 			text.setText(dialog.getResult()[i].toString());
-			System.out.println(dialog.getResult()[i]);
+			selectPath = Platform.getLocation().toString() + dialog.getResult()[i];
+			System.out.println(Platform.getLocation().toString() + dialog.getResult()[i]);
 		}
 		
 	}
